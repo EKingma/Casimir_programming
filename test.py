@@ -6,5 +6,5 @@ def Circ(r):
 
 """Adding a doctring to the file"""
 
-def Surface(r)
-    return np.pi*r**2
+def g(x):
+	return x**3
