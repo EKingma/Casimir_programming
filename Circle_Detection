@@ -29,7 +29,7 @@ def Segm(image_path):
 
                 Mask3D[i,j,:] = 1
     
-    ## Multiply circle mask with original color image
+    ## Multiply circle mask with original color image: element-wise product
     imgcolor = plt.imread('img/results_L3.jpg',0)
     CutC = np.multiply(Mask3D,imgcolor)
 
