@@ -2,35 +2,35 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
-import matplotlib.image as mpimg
-from skimage import draw
 
-## Import the images into the cv2 image reader
-img = cv2.imread('img/results_L3.jpg',0)
-img = cv2.medianBlur(img,5)
-cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-
-plt.imshow(img)
-
-circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,10,
-                            param1=50,param2=30,minRadius=95,maxRadius=100)
-
-circles = np.uint16(np.around(circles))   
-
-# Extract circle Mask from image
-Mask = np.zeros((img.shape[0],img.shape[1]),dtype = float)
-
-for k in range(1): #range(len(circles[0,:,0])):
-    for i in range(circles[0,k,1]-circles[0,k,2], circles[0,k,1]+circles[0,k,2]):
-        for j in range(circles[0,k,0]-circles[0,k,2],circles[0,k,0]+circles[0,k,2]):
-       
-           if (i-circles[0,k,1])**2+(j-circles[0,k,0])**2<circles[0,k,2]**2:
-        
-            Mask[i,j] = 1
-            CutC = np.multiply(Mask,img) 
-           # Dishes[k,]
-            
-                   
-plt.imshow(Mask)
+def Segm(image_path):
+    ## Function that segements the petri-dishes from the backround in the picture
+    
+    ## Import the images into the cv2 image reader
+    img = cv2.imread(image_path,0)
+    img = cv2.medianBlur(img,5)
+    cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
 
 
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,10,
+                                param1=50,param2=30,minRadius=95,maxRadius=100)
+
+    circles = np.uint16(np.around(circles))   
+    Dishes = [10,120,120]
+
+    ## Extract circle Mask from image
+    Mask3D = np.zeros((img.shape[0],img.shape[1],3),dtype = int)
+
+    for k in range(len(circles[0,:,0])):
+        for i in range(circles[0,k,1]-circles[0,k,2], circles[0,k,1]+circles[0,k,2]):
+            for j in range(circles[0,k,0]-circles[0,k,2],circles[0,k,0]+circles[0,k,2]):
+
+               if (i-circles[0,k,1])**2+(j-circles[0,k,0])**2<circles[0,k,2]**2:
+
+                Mask3D[i,j,:] = 1
+    
+    ## Multiply circle mask with original color image
+    imgcolor = plt.imread('img/results_L3.jpg',0)
+    CutC = np.multiply(Mask3D,imgcolor)
+
+    return np.multiply(Mask3D,imgcolor)
